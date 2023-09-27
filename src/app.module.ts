@@ -26,6 +26,7 @@ import { configValidationSchema } from './configs/config.schema';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB_NAME'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
       }),
     }),
     // TypeOrmModule.forRoot({
