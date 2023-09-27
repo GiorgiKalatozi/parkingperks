@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -10,9 +11,9 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignUpDto } from './dtos/sign-up.dto';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { User } from './entities/user.entity';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { UpdatePasswordDto } from './dtos/update-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,14 @@ export class AuthService {
     const { username, password } = signUpDto;
 
     try {
+      const userExists = await this.usersRepository.findOne({
+        where: { username },
+      });
+
+      if (userExists) {
+        throw new ConflictException('Username already exists.');
+      }
+
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -36,10 +45,6 @@ export class AuthService {
 
       await this.usersRepository.save(user);
     } catch (error) {
-      if (error.code === '23505') {
-        throw new ConflictException('Username already exists.');
-      }
-
       throw new InternalServerErrorException('Unable to create user.');
     }
   }
@@ -47,23 +52,28 @@ export class AuthService {
   async signIn(signInDto: SignInDto): Promise<{ accessToken: string }> {
     const { username, password } = signInDto;
 
-    const user = await this.usersRepository.findOne({ where: { username } });
+    try {
+      const user = await this.usersRepository.findOne({ where: { username } });
 
-    if (!user) {
-      throw new UnauthorizedException(
-        'User not found. Please check your login credentials',
-      );
-    }
+      if (!user) {
+        throw new UnauthorizedException(
+          'User not found. Please check your login credentials',
+        );
+      }
 
-    const passwordsMatch = await bcrypt.compare(password, user.password);
+      const passwordsMatch = await bcrypt.compare(password, user.password);
 
-    if (passwordsMatch) {
+      if (!passwordsMatch) {
+        throw new UnauthorizedException('Please check your login credentials');
+      }
+
       const payload: JwtPayload = { username };
       const accessToken: string = this.jwtService.sign(payload);
-      return { accessToken };
-    }
 
-    throw new UnauthorizedException('Please check your login credentials');
+      return { accessToken };
+    } catch (error) {
+      throw new UnauthorizedException('Unable to sign in.');
+    }
   }
 
   async updatePassword(
@@ -72,34 +82,35 @@ export class AuthService {
   ): Promise<void> {
     const { password, newPassword, confirmNewPassword } = updatePasswordDto;
 
-    // Retrieve the user by their ID
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-
-    if (!user) {
-      throw new UnauthorizedException('User not found.');
-    }
-
-    // Verify the user's current password
-    const currentPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!currentPasswordValid) {
-      throw new UnauthorizedException('Current password is incorrect.');
-    }
-
-    // Check if the new password and confirm new password match
-    if (newPassword !== confirmNewPassword) {
-      throw new ConflictException(
-        'New password and confirm password do not match.',
-      );
-    }
-
-    // Hash the new password and update it
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-    user.password = hashedPassword;
-
     try {
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found.');
+      }
+
+      const currentPasswordValid = await bcrypt.compare(
+        password,
+        user.password,
+      );
+
+      if (!currentPasswordValid) {
+        throw new UnauthorizedException('Current password is incorrect.');
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        throw new BadRequestException(
+          'New password and confirm password do not match.',
+        );
+      }
+
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      user.password = hashedPassword;
+
       await this.usersRepository.save(user);
     } catch (error) {
       throw new InternalServerErrorException('Unable to update password.');

@@ -1,7 +1,7 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { CarType } from '../enums/car.enum';
 
-export class CreateCarDto {
+export class CarDto {
   @IsNotEmpty()
   name: string;
 
