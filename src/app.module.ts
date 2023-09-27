@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configValidationSchema } from './configs/config.schema';
+import { CarsModule } from './cars/cars.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { configValidationSchema } from './configs/config.schema';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
       }),
     }),
+    CarsModule,
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
     //   host: 'postgres',
