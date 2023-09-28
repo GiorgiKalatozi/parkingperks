@@ -42,12 +42,16 @@ export class CarsController {
   async updateCar(
     @Param('id') id: string,
     @Body() carDto: CarDto,
+    @GetUser() user: User,
   ): Promise<Car> {
-    return this.carsService.updateCar(id, carDto);
+    return this.carsService.updateCar(id, carDto, user);
   }
 
   @Delete(':id')
-  async deleteCar(@Param('id') id: string): Promise<void> {
-    return this.carsService.deleteCar(id);
+  async deleteCar(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.carsService.deleteCar(id, user);
   }
 }
