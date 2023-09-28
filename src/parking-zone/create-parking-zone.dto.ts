@@ -1,6 +1,10 @@
 import { IsNotEmpty, IsString, IsNumber, Min, Max } from 'class-validator';
+import { PrimaryGeneratedColumn } from 'typeorm';
 
 export class CreateParkingZoneDto {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
   @IsNotEmpty()
   @IsString()
   name: string;
