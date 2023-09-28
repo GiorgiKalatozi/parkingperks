@@ -17,30 +17,22 @@ export class CarsService {
   ) {}
 
   async getUserCars(user: User): Promise<Car[]> {
-    try {
-      return await this.carsRepository.find({ where: { user } });
-    } catch (error) {
-      throw new Error('Unable to fetch user cars');
-    }
+    return await this.carsRepository.find({ where: { user } });
   }
 
   async getUserCar(user: User, id: string): Promise<Car> {
-    try {
-      const car = await this.carsRepository.findOne({
-        where: {
-          id,
-          user: { id: user.id },
-        },
-      });
+    const car = await this.carsRepository.findOne({
+      where: {
+        id,
+        user: { id: user.id },
+      },
+    });
 
-      if (!car) {
-        throw new NotFoundException('Car not found');
-      }
-
-      return car;
-    } catch (error) {
-      throw new Error('Unable to fetch user car');
+    if (!car) {
+      throw new NotFoundException('Car not found');
     }
+
+    return car;
   }
 
   async createCar(carDto: CarDto, user: User): Promise<Car> {
@@ -77,6 +69,7 @@ export class CarsService {
     }
 
     await this.carsRepository.update(id, carDto);
+
     return existingCar;
   }
 

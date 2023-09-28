@@ -21,14 +21,7 @@ export class CreateParkingReservationDto {
   @IsNotEmpty()
   carId: string;
 
-  //   @IsNumber()
-  //   @IsNotEmpty()
-  //   @Min(0, { message: 'Total cost must be at least 0' })
-  //   totalCost: number;
-
-  // Placeholder for duration in minutes
   durationInMinutes: number;
 
-  // Placeholder for parking fee per hour
   parkingFeePerHour: number;
 }

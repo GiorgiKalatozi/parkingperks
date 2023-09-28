@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { CreateParkingReservationDto } from './create-parking-reservation.dto';
 import { ParkingReservation } from './parking-reservation.entity';
 import { ParkingUtilsService } from './parking-utils.service';
+import { UpdateParkingReservationDto } from './update-parking-reservation.dto';
 
 @Injectable()
 export class ParkingReservationService {
@@ -25,6 +26,24 @@ export class ParkingReservationService {
     private parkingZoneRepository: Repository<ParkingZone>,
     private parkingUtilsService: ParkingUtilsService,
   ) {}
+
+  async getAllParkingReservations(): Promise<ParkingReservation[]> {
+    return await this.reservationRepository.find();
+  }
+
+  async getParkingReservation(
+    reservationId: string,
+  ): Promise<ParkingReservation> {
+    const reservation = await this.reservationRepository.findOne({
+      where: { id: reservationId },
+    });
+
+    if (!reservation) {
+      throw new NotFoundException('Parking reservation not found');
+    }
+
+    return reservation;
+  }
 
   async createParkingReservation(
     createParkingReservation: CreateParkingReservationDto,
@@ -93,5 +112,64 @@ export class ParkingReservationService {
     await this.reservationRepository.save(reservation);
 
     return reservation;
+  }
+
+  async updateParkingReservation(
+    reservationId: string,
+    updateReservationDto: UpdateParkingReservationDto,
+  ): Promise<ParkingReservation> {
+    const reservation = await this.reservationRepository.findOne({
+      where: { id: reservationId },
+    });
+
+    if (!reservation) {
+      throw new NotFoundException('Reservation not found');
+    }
+
+    // Update reservation fields based on the DTO
+    if (updateReservationDto.startTime) {
+      reservation.startTime = new Date(updateReservationDto.startTime);
+    }
+
+    if (updateReservationDto.endTime) {
+      reservation.endTime = new Date(updateReservationDto.endTime);
+    }
+
+    if (updateReservationDto.userId) {
+      reservation.user.id = updateReservationDto.userId;
+    }
+
+    if (updateReservationDto.zoneId) {
+      reservation.parkingZone.id = updateReservationDto.zoneId;
+    }
+
+    if (updateReservationDto.carId) {
+      reservation.car.id = updateReservationDto.carId;
+    }
+
+    await this.reservationRepository.save(reservation);
+
+    return reservation;
+  }
+  async deleteParkingReservation(reservationId: string): Promise<void> {
+    const reservation = await this.reservationRepository.findOne({
+      where: { id: reservationId },
+    });
+
+    if (!reservation) {
+      throw new NotFoundException('Parking reservation not found');
+    }
+
+    await this.reservationRepository.remove(reservation);
+  }
+
+  async getUserParkingHistory(userId: string): Promise<ParkingReservation[]> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user.parkingReservations;
   }
 }
