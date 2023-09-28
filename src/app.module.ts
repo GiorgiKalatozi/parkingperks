@@ -8,6 +8,7 @@ import { configValidationSchema } from './configs/config.schema';
 import { CarsModule } from './cars/cars.module';
 import { ParkingZoneModule } from './parking-zone/parking-zone.module';
 import { AdminModule } from './admin/admin.module';
+import { ParkingReservationModule } from './parking-reservation/parking-reservation.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AdminModule } from './admin/admin.module';
     CarsModule,
     ParkingZoneModule,
     AdminModule,
+    ParkingReservationModule,
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
     //   host: 'postgres',

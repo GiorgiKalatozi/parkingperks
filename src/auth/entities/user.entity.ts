@@ -1,6 +1,7 @@
 import { Car } from 'src/cars/entities/car.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole } from '../enums/user-role.enum';
+import { ParkingReservation } from 'src/parking-reservation/parking-reservation.entity';
 
 @Entity()
 export class User {
@@ -13,12 +14,21 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 100.0 })
-  virtualBalance: number;
-
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
 
-  @OneToMany(() => Car, (car) => car.user, { eager: true })
+  @Column({ default: 100 }) // Initial virtual balance of 100 GEL
+  virtualBalance: number;
+
+  @OneToMany(() => Car, (car) => car.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+  })
   cars: Car[];
+
+  @OneToMany(() => ParkingReservation, (reservation) => reservation.user, {
+    onDelete: 'CASCADE',
+  })
+  parkingReservations: ParkingReservation[];
 }

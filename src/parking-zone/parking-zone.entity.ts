@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { ParkingReservation } from 'src/parking-reservation/parking-reservation.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class ParkingZone {
@@ -13,4 +14,7 @@ export class ParkingZone {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   parkingFeePerHour: number;
+
+  @OneToMany(() => ParkingReservation, (reservation) => reservation.parkingZone)
+  parkingReservations: ParkingReservation[];
 }
