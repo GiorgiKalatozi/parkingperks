@@ -126,7 +126,6 @@ export class ParkingReservationService {
       throw new NotFoundException('Reservation not found');
     }
 
-    // Update reservation fields based on the DTO
     if (updateReservationDto.startTime) {
       reservation.startTime = new Date(updateReservationDto.startTime);
     }

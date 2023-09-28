@@ -72,7 +72,17 @@ export class ParkingZoneService {
       throw new NotFoundException('Parking zone not found.');
     }
 
-    // Update the parking zone's properties
+    // Check if a parking zone with the same name already exists
+    const existingParkingZone = await this.parkingZoneRepository.findOne({
+      where: { name },
+    });
+
+    if (existingParkingZone && existingParkingZone.id !== id) {
+      throw new ConflictException(
+        'A parking zone with the same name already exists.',
+      );
+    }
+
     parkingZone.name = name;
     parkingZone.address = address;
     parkingZone.parkingFeePerHour = parkingFeePerHour;
@@ -81,7 +91,6 @@ export class ParkingZoneService {
   }
 
   async deleteParkingZone(id: string): Promise<void> {
-    // Check if the parking zone with the given ID exists
     const parkingZone = await this.parkingZoneRepository.findOne({
       where: { id },
     });
