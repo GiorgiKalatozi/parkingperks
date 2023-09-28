@@ -1,15 +1,14 @@
-// car.entity.ts
-import { User } from 'src/auth/entities/user.entity';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  Entity,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CarType } from '../enums/car.enum';
 import { Exclude } from 'class-transformer';
-import { ParkingReservation } from 'src/parking-reservation/parking-reservation.entity';
+import { ParkingReservation } from 'src/modules/parking-reservation/parking-reservation.entity';
+import { User } from '../auth/entities/user.entity';
+import { CarType } from './car.enum';
 
 @Entity()
 export class Car {

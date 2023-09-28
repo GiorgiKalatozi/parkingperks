@@ -1,4 +1,4 @@
-import { ParkingReservation } from 'src/parking-reservation/parking-reservation.entity';
+import { ParkingReservation } from 'src/modules/parking-reservation/parking-reservation.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()

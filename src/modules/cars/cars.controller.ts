@@ -9,11 +9,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/auth/entities/user.entity';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../auth/entities/user.entity';
 import { CarsService } from './cars.service';
-import { CarDto } from './dtos/car.dto';
-import { Car } from './entities/car.entity';
+import { CarDto } from './car.dto';
+import { Car } from './car.entity';
 
 @Controller('cars')
 @UseGuards(AuthGuard())

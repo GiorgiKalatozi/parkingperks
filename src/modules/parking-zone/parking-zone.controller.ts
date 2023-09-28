@@ -9,11 +9,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UserRole } from 'src/auth/enums/user-role.enum';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { ParkingZone } from './parking-zone.entity';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../auth/enums/user-role.enum';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { CreateParkingZoneDto } from './create-parking-zone.dto';
+import { ParkingZone } from './parking-zone.entity';
 import { ParkingZoneService } from './parking-zone.service';
 import { UpdateParkingZoneDto } from './update-parking-zone.dto';
 

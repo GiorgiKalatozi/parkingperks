@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/auth/entities/user.entity';
-import { UserRole } from 'src/auth/enums/user-role.enum';
 import { Repository } from 'typeorm';
+import { User } from '../auth/entities/user.entity';
+import { UserRole } from '../auth/enums/user-role.enum';
 
 @Injectable()
 export class AdminService {

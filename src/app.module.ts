@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
 import { configValidationSchema } from './configs/config.schema';
-import { CarsModule } from './cars/cars.module';
-import { ParkingZoneModule } from './parking-zone/parking-zone.module';
-import { AdminModule } from './admin/admin.module';
-import { ParkingReservationModule } from './parking-reservation/parking-reservation.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { CarsModule } from './modules/cars/cars.module';
+import { ParkingReservationModule } from './modules/parking-reservation/parking-reservation.module';
+import { ParkingZoneModule } from './modules/parking-zone/parking-zone.module';
 
 @Module({
   imports: [
@@ -37,17 +37,6 @@ import { ParkingReservationModule } from './parking-reservation/parking-reservat
     ParkingZoneModule,
     AdminModule,
     ParkingReservationModule,
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: 'postgres',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: 'postgres',
-    //   database: 'parkingperks',
-    //   entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    //   autoLoadEntities: true,
-    //   synchronize: true,
-    // }),
   ],
   controllers: [AppController],
   providers: [AppService],

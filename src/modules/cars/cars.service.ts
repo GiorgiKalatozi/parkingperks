@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/auth/entities/user.entity';
+import { User } from '../auth/entities/user.entity';
 import { Repository } from 'typeorm';
-import { CarDto } from './dtos/car.dto';
-import { Car } from './entities/car.entity';
+import { CarDto } from './car.dto';
+import { Car } from './car.entity';
 
 @Injectable()
 export class CarsService {

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CarsController } from './cars.controller';
-import { CarsService } from './cars.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Car } from './entities/car.entity';
-import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../auth/entities/user.entity';
+import { AdminController } from './admin.controller';
+import { AdminService } from './admin.service';
 
 @Module({
   imports: [
@@ -21,9 +21,9 @@ import { PassportModule } from '@nestjs/passport';
         },
       }),
     }),
-    TypeOrmModule.forFeature([Car]),
+    TypeOrmModule.forFeature([User]),
   ],
-  controllers: [CarsController],
-  providers: [CarsService],
+  controllers: [AdminController],
+  providers: [AdminService],
 })
-export class CarsModule {}
+export class AdminModule {}

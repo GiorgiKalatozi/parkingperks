@@ -1,13 +1,13 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from 'src/auth/entities/user.entity';
-import { Car } from 'src/cars/entities/car.entity';
-import { ParkingZone } from 'src/parking-zone/parking-zone.entity';
+import { User } from '../auth/entities/user.entity';
+import { Car } from '../cars/car.entity';
+import { ParkingZone } from '../parking-zone/parking-zone.entity';
 
 @Entity()
 export class ParkingReservation {

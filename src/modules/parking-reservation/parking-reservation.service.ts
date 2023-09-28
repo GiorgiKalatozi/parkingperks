@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/auth/entities/user.entity';
-import { Car } from 'src/cars/entities/car.entity';
-import { ParkingZone } from 'src/parking-zone/parking-zone.entity';
 import { Repository } from 'typeorm';
+import { User } from '../auth/entities/user.entity';
+import { Car } from '../cars/car.entity';
+import { ParkingZone } from '../parking-zone/parking-zone.entity';
 import { CreateParkingReservationDto } from './create-parking-reservation.dto';
 import { ParkingReservation } from './parking-reservation.entity';
 import { ParkingUtilsService } from './parking-utils.service';

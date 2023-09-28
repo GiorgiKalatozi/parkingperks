@@ -1,7 +1,7 @@
-import { Car } from 'src/cars/entities/car.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole } from '../enums/user-role.enum';
-import { ParkingReservation } from 'src/parking-reservation/parking-reservation.entity';
+import { ParkingReservation } from 'src/modules/parking-reservation/parking-reservation.entity';
+import { Car } from 'src/modules/cars/car.entity';
 
 @Entity()
 export class User {

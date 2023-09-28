@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
-import { CarType } from '../enums/car.enum';
+import { CarType } from './car.enum';
 
 export class CarDto {
   @IsNotEmpty()
