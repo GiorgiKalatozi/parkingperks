@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configValidationSchema } from './configs/config.schema';
 import { CarsModule } from './cars/cars.module';
 import { ParkingZoneModule } from './parking-zone/parking-zone.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ParkingZoneModule } from './parking-zone/parking-zone.module';
     }),
     CarsModule,
     ParkingZoneModule,
+    AdminModule,
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
     //   host: 'postgres',
