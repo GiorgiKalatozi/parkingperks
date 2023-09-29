@@ -1,73 +1,217 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# API Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Running the Application
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+To run this application locally, follow these steps:
 
-## Description
+1.  ```bash
+    git clone git@github.com:GiorgiKalatozi/parkingperks.git
+    ```
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+2.  ```bash
+      cd parkingperks
+    ```
+3.  ```bash
+      yarn install
+    ```
+4.  ```bash
+      docker-compose up --build
+    ```
 
-## Installation
+5.  Create a PostgreSQL database named "parkingperks" manually.
 
-```bash
-$ yarn install
-```
+6.  Create a .env file in the project root directory and copy the variables from the example.env file and paste them into .env.
 
-## Running the app
+## Authentication
 
-```bash
-# development
-$ yarn run start
+### User Registration
 
-# watch mode
-$ yarn run start:dev
+Create a new user in the database.
 
-# production mode
-$ yarn run start:prod
-```
+- **Endpoint:** POST `/auth/signup`
+- **Parameters:**
+  - `username` (string): User's username.
+  - `password` (string): User's password.
 
-## Test
+### User Login
 
-```bash
-# unit tests
-$ yarn run test
+Authenticate a user with their credentials.
 
-# e2e tests
-$ yarn run test:e2e
+- **Endpoint:** POST `/auth/signin`
+- **Parameters:**
+  - `userName` (string): User's username.
+  - `password` (string): User's password.
 
-# test coverage
-$ yarn run test:cov
-```
+### Change User Password
 
-## Support
+Change the user's password.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- **Endpoint:** POST `/auth/update-password`
+- **Parameters:**
+  - `password` (string): Users current password.
+  - `newPassword` (string): New password.
+  - `confirmNewPassword` (string): Confirm new password.
 
-## Stay in touch
+## Cars
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Get All Cars
 
-## License
+Get a list of all cars.
 
-Nest is [MIT licensed](LICENSE).
+- **Endpoint:** GET `/cars`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+
+### Get Car by ID
+
+Retrieve a car by its unique identifier.
+
+- **Endpoint:** GET `/cars/:id`
+- **Headers:**
+
+  - `Authorization` (string): Bearer token (your generated token).
+
+### Create Car
+
+Create a new car.
+
+- **Endpoint:** POST `/cars`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+- **Parameters:**
+  - `name` (string): The name of the car.
+  - `licensePlate` (string): The license plate of the car.
+  - `type` (string): The type of the car. Must be one of the following values: "Compact", "Sedan", "SUV", "Truck", "Van", "Electric".
+
+### Update Car
+
+Update an existing car.
+
+- **Endpoint:** PUT `/cars/:id`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+- **Parameters:**
+  - `name` (string): The updated name of the car (optional).
+  - `licensePlate` (string): The updated license plate of the car (optional).
+  - `type` (string): The updated type of the car (optional). Must be one of the following values: "Compact", "Sedan", "SUV", "Truck", "Van", "Electric".
+    This documentation covers both creating and updating cars using the same DTO.
+
+### Delete Car
+
+Delete an existing car.
+
+- **Endpoint:** DELETE `/cars/:id`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+
+## Admin
+
+### Assign Role to User
+
+Assign a role to a user.
+
+- **Endpoint:** POST `/admin/assign/:userId`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+
+### Revoke Role from User
+
+Revoke a role from a user.
+
+- **Endpoint:** DELETE `/admin/revoke/:userId`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+
+## Parking Zones
+
+### Create Parking Zone
+
+Create a new parking zone. (Admin Only)
+
+- **Endpoint:** POST `/parking-zone`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated admin token).
+- **Parameters:**
+  - `name` (string): The name of the parking zone.
+  - `address` (string): The address of the parking zone.
+  - `parkingFeePerHour` (number): The parking fee per hour (between 0 and 1000).
+
+### Get All Parking Zones
+
+Get a list of all parking zones.
+
+- **Endpoint:** GET `/parking-zone`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+
+### Get Parking Zone by ID
+
+Retrieve a parking zone by its unique identifier.
+
+- **Endpoint:** GET `/parking-zone/:id`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+
+### Update Parking Zone
+
+Update an existing parking zone. (Admin Only)
+
+- **Endpoint:** PUT `/parking-zone/:id`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated admin token).
+- **Parameters:**
+  - `name` (string, optional): The updated name of the parking zone.
+  - `address` (string, optional): The updated address of the parking zone.
+  - `parkingFeePerHour` (number, optional): The updated parking fee per hour (between 0 and 1000).
+
+## Parking Reservations
+
+### Create Parking Reservation
+
+Create a new parking reservation.
+
+- **Endpoint:** POST `/parking-reservation`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+- **Parameters:**
+  - `startTime` (string): The start time of the reservation in ISO8601 format (e.g., "2023-09-30T14:00:00Z").
+  - `endTime` (string): The end time of the reservation in ISO8601 format (e.g., "2023-09-30T15:00:00Z").
+  - `userId` (string, UUID): The unique identifier of the user making the reservation.
+  - `zoneId` (string, UUID): The unique identifier of the parking zone.
+  - `carId` (string, UUID): The unique identifier of the user's car.
+  - `durationInMinutes` (number): The duration of the reservation in minutes.
+  - `parkingFeePerHour` (number): The parking fee per hour for the selected parking zone.
+
+### Get All Parking Reservations
+
+Get a list of user's parking reservation history.
+
+- **Endpoint:** GET `/parking-reservation`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+
+### Get Parking Reservation by ID
+
+Retrieve a parking reservation by its unique identifier.
+
+- **Endpoint:** GET `/parking-reservation/:id`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+
+### Update Parking Reservation
+
+Update an existing parking reservation.
+
+- **Endpoint:** PUT `/parking-reservation/:id`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
+- **Parameters:**
+  - Provide parameters for updating the reservation.
+
+### Delete Parking Reservation
+
+Delete an existing parking reservation.
+
+- **Endpoint:** DELETE `/parking-reservation/:id`
+- **Headers:**
+  - `Authorization` (string): Bearer token (your generated token).
