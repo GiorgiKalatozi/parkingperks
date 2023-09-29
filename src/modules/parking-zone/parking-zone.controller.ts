@@ -23,13 +23,11 @@ export class ParkingZoneController {
   constructor(private readonly parkingZoneService: ParkingZoneService) {}
 
   @Get()
-  @Roles(UserRole.ADMIN) // Only administrators can view all parking zones
   async getAllParkingZones(): Promise<ParkingZone[]> {
     return this.parkingZoneService.getAllParkingZone();
   }
 
   @Get(':id')
-  @Roles(UserRole.ADMIN) // Only administrators can get one parking zone
   async getParkingZone(@Param('id') id: string): Promise<ParkingZone> {
     return this.parkingZoneService.getParkingZoneById(id);
   }

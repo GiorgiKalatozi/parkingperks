@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -26,20 +25,18 @@ export class ParkingReservationController {
   ) {}
 
   @Get()
-  async getAllParkingReservations(): Promise<ParkingReservation[]> {
-    return this.parkingReservationService.getAllParkingReservations();
-  }
-
-  @Get('history/:userId')
-  async getUserParkingHistory(@Param('userId') userId: string) {
-    return this.parkingReservationService.getUserParkingHistory(userId);
+  async getAllParkingReservations(
+    @GetUser() user: User,
+  ): Promise<ParkingReservation[]> {
+    return this.parkingReservationService.getAllParkingReservations(user);
   }
 
   @Get(':id')
-  async getParkingReservationById(
+  async getParkingReservation(
     @Param('id') id: string,
+    @GetUser() user: User,
   ): Promise<ParkingReservation> {
-    return this.parkingReservationService.getParkingReservation(id);
+    return this.parkingReservationService.getParkingReservation(id, user);
   }
 
   @Post()
@@ -47,13 +44,9 @@ export class ParkingReservationController {
     @Body() createParkingReservationDto: CreateParkingReservationDto,
     @GetUser() user: User,
   ): Promise<ParkingReservation> {
-    if (createParkingReservationDto.userId !== user.id) {
-      throw new UnauthorizedException(
-        "You are not authorized to create a reservation for this user's ID.",
-      );
-    }
     return this.parkingReservationService.createParkingReservation(
       createParkingReservationDto,
+      user,
     );
   }
 
@@ -61,15 +54,20 @@ export class ParkingReservationController {
   async updateParkingReservation(
     @Param('id') id: string,
     @Body() updateParkingReservationDto: UpdateParkingReservationDto,
+    @GetUser() user: User,
   ): Promise<ParkingReservation> {
     return this.parkingReservationService.updateParkingReservation(
       id,
       updateParkingReservationDto,
+      user,
     );
   }
 
   @Delete(':id')
-  async deleteParkingReservation(@Param('id') id: string): Promise<void> {
-    return this.parkingReservationService.deleteParkingReservation(id);
+  async deleteParkingReservation(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.parkingReservationService.deleteParkingReservation(id, user);
   }
 }

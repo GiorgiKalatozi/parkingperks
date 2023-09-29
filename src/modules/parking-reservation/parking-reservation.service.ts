@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,6 +13,7 @@ import { CreateParkingReservationDto } from './create-parking-reservation.dto';
 import { ParkingReservation } from './parking-reservation.entity';
 import { ParkingUtilsService } from './parking-utils.service';
 import { UpdateParkingReservationDto } from './update-parking-reservation.dto';
+import { GetUser } from 'src/common/decorators/get-user.decorator';
 
 @Injectable()
 export class ParkingReservationService {
@@ -27,12 +29,15 @@ export class ParkingReservationService {
     private parkingUtilsService: ParkingUtilsService,
   ) {}
 
-  async getAllParkingReservations(): Promise<ParkingReservation[]> {
-    return await this.reservationRepository.find();
+  async getAllParkingReservations(user: User): Promise<ParkingReservation[]> {
+    return await this.reservationRepository.find({
+      where: { user: user },
+    });
   }
 
   async getParkingReservation(
     reservationId: string,
+    user: User,
   ): Promise<ParkingReservation> {
     const reservation = await this.reservationRepository.findOne({
       where: { id: reservationId },
@@ -42,21 +47,32 @@ export class ParkingReservationService {
       throw new NotFoundException('Parking reservation not found');
     }
 
+    if (reservation.user.id !== user.id) {
+      throw new UnauthorizedException(
+        'You are not authorized to access this reservation.',
+      );
+    }
+
     return reservation;
   }
 
   async createParkingReservation(
-    createParkingReservation: CreateParkingReservationDto,
+    createParkingReservationDto: CreateParkingReservationDto,
+    @GetUser() user: User,
   ) {
-    const { userId, zoneId, carId } = createParkingReservation;
+    const { userId, zoneId, carId } = createParkingReservationDto;
 
-    const user = await this.usersRepository.findOne({
-      where: { id: userId },
-      select: ['id', 'username', 'role', 'virtualBalance', 'cars'],
-    });
+    if (userId !== user.id) {
+      throw new UnauthorizedException(
+        "You are not authorized to create a reservation for this user's ID.",
+      );
+    }
 
-    if (!user) {
-      throw new NotFoundException('User not found');
+    const isUserCar = user.cars.some((car) => car.id === carId);
+    if (!isUserCar) {
+      throw new UnauthorizedException(
+        'You are not authorized to create a reservation for this car.',
+      );
     }
 
     const car = await this.carRepository.findOne({
@@ -79,7 +95,7 @@ export class ParkingReservationService {
     const calculatedStartTime = this.parkingUtilsService.calculatedStartTime();
     const calculatedEndTime = this.parkingUtilsService.calculatedEndTime(
       calculatedStartTime,
-      createParkingReservation.durationInMinutes,
+      createParkingReservationDto.durationInMinutes,
     );
     const calculatedTotalCost = this.parkingUtilsService.calculatedTotalCost(
       calculatedStartTime,
@@ -117,13 +133,20 @@ export class ParkingReservationService {
   async updateParkingReservation(
     reservationId: string,
     updateReservationDto: UpdateParkingReservationDto,
+    user: User,
   ): Promise<ParkingReservation> {
     const reservation = await this.reservationRepository.findOne({
       where: { id: reservationId },
     });
 
     if (!reservation) {
-      throw new NotFoundException('Reservation not found');
+      throw new NotFoundException('Parking reservation not found.');
+    }
+
+    if (reservation.user.id !== user.id) {
+      throw new UnauthorizedException(
+        'You are not authorized to update this reservation.',
+      );
     }
 
     if (updateReservationDto.startTime) {
@@ -150,7 +173,10 @@ export class ParkingReservationService {
 
     return reservation;
   }
-  async deleteParkingReservation(reservationId: string): Promise<void> {
+  async deleteParkingReservation(
+    reservationId: string,
+    user: User,
+  ): Promise<void> {
     const reservation = await this.reservationRepository.findOne({
       where: { id: reservationId },
     });
@@ -159,16 +185,12 @@ export class ParkingReservationService {
       throw new NotFoundException('Parking reservation not found');
     }
 
-    await this.reservationRepository.remove(reservation);
-  }
-
-  async getUserParkingHistory(userId: string): Promise<ParkingReservation[]> {
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (reservation.user.id !== user.id) {
+      throw new UnauthorizedException(
+        'You are not authorized to delete this reservation.',
+      );
     }
 
-    return user.parkingReservations;
+    await this.reservationRepository.remove(reservation);
   }
 }
