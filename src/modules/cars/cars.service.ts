@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../auth/entities/user.entity';
 import { Repository } from 'typeorm';
+import { User } from '../auth/entities/user.entity';
 import { CarDto } from './car.dto';
 import { Car } from './car.entity';
 

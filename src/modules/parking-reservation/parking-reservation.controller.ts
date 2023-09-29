@@ -10,13 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../../common/decorators/get-user.decorator';
+import { User } from '../auth/entities/user.entity';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { CreateParkingReservationDto } from './create-parking-reservation.dto';
 import { ParkingReservation } from './parking-reservation.entity';
 import { ParkingReservationService } from './parking-reservation.service';
 import { UpdateParkingReservationDto } from './update-parking-reservation.dto';
-import { GetUser } from '../auth/decorators/get-user.decorator';
-import { User } from '../auth/entities/user.entity';
 
 @Controller('parking-reservation')
 @UseGuards(AuthGuard(), RolesGuard)

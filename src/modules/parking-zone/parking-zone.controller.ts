@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from '../auth/decorators/roles.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../auth/enums/user-role.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { CreateParkingZoneDto } from './create-parking-zone.dto';
